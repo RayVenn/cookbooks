@@ -1,0 +1,56 @@
+#/bin/bash
+
+PID=$(pgrep -f 'schema-repo-bundle')
+SCRIPT=<%= @path %>/run.sh
+TYPE="file-system"
+
+start() {
+  if [ -n "$(pgrep -f 'schema-repo-bundle')" ]; then
+    echo 'Service already running' >&2
+    return 0
+  fi
+  echo 'Starting service…'
+  nohup $SCRIPT $TYPE >/dev/null 2>&1 &
+  echo 'Service started'
+  sleep 1
+  echo "schema-repo pid: $(pgrep -f 'schema-repo-bundle')"
+}
+
+
+stop() {
+  if [ ! -n "$(pgrep -f 'schema-repo-bundle')" ]; then
+    echo 'Service not running' >&2
+    return 0
+  fi
+  echo 'Stopping service…' >&2
+  kill -9 $PID
+  echo 'Service stopped' >&2
+}
+
+status() {
+  if [ -n "$PID" ]; then
+    echo 'Service running'
+    echo "schema-repo pid: $PID"
+  else
+    echo 'Service not running'
+  fi
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  status)
+  status
+  ;;
+  restart)
+    stop
+    start
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+esac
+

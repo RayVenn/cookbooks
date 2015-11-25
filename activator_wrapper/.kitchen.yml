@@ -1,0 +1,20 @@
+---
+driver:
+  name: vagrant
+  require_chef_omnibus: true
+  customize:
+    memory: 1024
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-14.04
+    driver:
+      box: opscode-ubuntu-14.04
+
+suites:
+  - name: default
+    run_list:
+      - recipe[activator_wrapper::default]
+    attributes:

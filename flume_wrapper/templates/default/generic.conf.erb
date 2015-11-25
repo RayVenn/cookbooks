@@ -1,0 +1,45 @@
+#####THIS FILE IS MANAGED BY CHEF#####
+#####CHANGES WILL BE OVERWRITTEN#####
+
+
+# Sources, channels, and sinks are defined per
+# agent name, in this case applog.
+
+<%= @topic_name %>.sources = kafka-source-1
+<%= @topic_name %>.channels = hdfs-channel-1
+<%= @topic_name %>.sinks    = hdfs-sink-1
+
+# Sources
+<%= @topic_name %>.sources.kafka-source-1.type = org.apache.flume.source.kafka.KafkaSource
+<%= @topic_name %>.sources.kafka-source-1.brokerList = <%= @kafka_connect %>
+<%= @topic_name %>.sources.kafka-source-1.readSmallestOffset = true
+<%= @topic_name %>.sources.kafka-source-1.parseAsFlumeEvent = false
+<%= @topic_name %>.sources.kafka-source-1.topic = <%= @topic %>
+<%= @topic_name %>.sources.kafka-source-1.groupId = <%= @environment %>.flume
+<%= @topic_name %>.sources.kafka-source-1.zookeeperConnect = <%= @zk_connect %>
+<%= @topic_name %>.sources.kafka-source-1.channels = hdfs-channel-1
+
+#Interceptor
+<%= @topic_name %>.sources.kafka-source-1.interceptors = attach
+<%= @topic_name %>.sources.kafka-source-1.interceptors.attach.type = static
+<%= @topic_name %>.sources.kafka-source-1.interceptors.attach.key = flume.avro.schema.url
+<%= @topic_name %>.sources.kafka-source-1.interceptors.attach.value = http://<%= @schema_repo %>/schema-repo/<%= @topic %>/latest
+
+#Channel
+<%= @topic_name %>.channels.hdfs-channel-1.type = file
+<%= @topic_name %>.channels.hdfs-channel-1.checkpointDir = ~/.flume/<%= @topic %>/checkpoint
+<%= @topic_name %>.channels.hdfs-channel-1.dataDirs = ~/.flume/<%= @topic %>/data
+
+#Sink 
+<%= @topic_name %>.sinks.hdfs-sink-1.channel = hdfs-channel-1
+<%= @topic_name %>.sinks.hdfs-sink-1.type = hdfs
+<%= @topic_name %>.sinks.hdfs-sink-1.hdfs.fileType = DataStream
+<%= @topic_name %>.sinks.hdfs-sink-1.hdfs.filePrefix = <%= @topic %>-events
+<%= @topic_name %>.sinks.hdfs-sink-1.hdfs.useLocalTimeStamp = true
+<%= @topic_name %>.sinks.hdfs-sink-1.hdfs.path = /scene/kafka/channel/<%= @environment %>/<%= @topic %>/%y-%m-%d
+<%= @topic_name %>.sinks.hdfs-sink-1.hdfs.rollCount = 0
+<%= @topic_name %>.sinks.hdfs-sink-1.hdfs.rollSize = 0
+
+
+# AvroEventSerializer
+<%= @topic_name %>.sinks.hdfs-sink-1.serializer = main.java.AvroEventSerializer$Builder

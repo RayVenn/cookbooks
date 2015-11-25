@@ -1,0 +1,11 @@
+name 'artifactory_wrapper'
+maintainer 'Zhenyu Wen'
+maintainer_email 'zhenyu@max2.com'
+license 'all_rights'
+description 'Installs/Configures arti_wrapper'
+long_description 'Installs/Configures arti_wrapper'
+version '0.1.0'
+
+depends 'apt'
+depends 'java'
+depends 'artifactory'

@@ -1,0 +1,70 @@
+upstream elasticsearch {
+<% @es_nodes.each do |es_node| -%>
+    server <%= es_node['ipaddress'] %>:9200;
+<% end -%>
+}
+
+upstream loadbackend {
+<% @lb_nodes.each do |lb_node| -%>
+    server <%= lb_node['ipaddress'] %>:10000;
+<% end -%>
+    least_conn;
+}
+
+upstream uchiwa {
+<% @uch_nodes.each do |uch_node| -%>
+    server <%= uch_node['ipaddress'] %>:3000;
+<% end -%>
+}
+
+upstream grafana {
+<% @gra_nodes.each do |gra_node| -%>
+     server <%= gra_node['ipaddress'] %>:8080;
+<%end -%>
+}
+
+server {
+    listen 80;
+
+    server_name <%= @pub_ipaddress %>;
+
+    # disable any limits to avoid HTTP 413 for large image uploads
+    client_max_body_size 0;
+
+    
+
+    location ~ ^/load/.*$ {
+        proxy_pass http://loadbackend;
+        rewrite ^/load/(.*) /$1 break;
+    }
+
+    location ~ ^/ub-test/.*$ {
+        proxy_pass http://unified;
+        rewrite ^/ub-test/(.*) /$1 break;
+    }
+
+    location ~ /checks/ {
+        proxy_pass http://uchiwa;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        rewrite /checks/(.*) /$1 break;
+    }
+
+    location ~ /monitoring/ {
+        proxy_pass http://grafana;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+        rewrite /monitoring/(.*) /$1 break;
+    }
+
+    location /user/createSocket/ {
+        proxy_pass http://backend/user/createSocket/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}

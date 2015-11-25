@@ -1,0 +1,45 @@
+---
+driver:
+  name: vagrant
+  network:
+    - ["forwarded_port", {guest: 8081, host: 8044}]
+  require_chef_omnibus: true
+  customize:
+    memory: 1024
+
+## The forwarded_port port feature lets you connect to ports on the VM guest via
+## localhost on the host.
+## see also: https://docs.vagrantup.com/v2/networking/forwarded_ports.html
+
+#  network:
+#    - ["forwarded_port", {guest: 80, host: 8080}]
+
+provisioner:
+  name: chef_zero
+  attribute:
+    java:
+      ark_retries: 2
+      ark_retry_delay: 10
+
+## require_chef_omnibus specifies a specific chef version to install. You can
+## also set this to `true` to always use the latest version.
+## see also: https://docs.chef.io/config_yml_kitchen.html
+
+#  require_chef_omnibus: 12.5.0
+
+platforms:
+  - name: ubuntu-14.04
+    driver:
+      box: opscode-ubuntu-14.04
+
+suites:
+  - name: artifactory-oracle
+    run_list:
+      #    - recipe[java::default]
+      - recipe[artifactory_wrapper::default]
+
+  # attributes: java:
+  #      jdk_version: "8"
+  #      oracle:
+  #        accept_oracle_download_terms: true
+  #      install_flavor: oracle
