@@ -1,0 +1,8 @@
+{
+  "slack": {
+    "webhook_url": "https://hooks.slack.com/services/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",
+    "channel": "#bigbrother",
+    "bot_name": "bigbrother",
+    "markdown_enabled": false
+  }
+}
