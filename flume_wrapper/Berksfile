@@ -1,4 +1,4 @@
 source "https://supermarket.getchef.com"
 metadata
-cookbook "flume_agent", path: "../flume_agent"
+#cookbook "flume_agent", path: "../flume_agent"
 ENV['SSL_CERT_FILE'] = '/opt/chefdk/embedded/ssl/certs/cacert.pem'
