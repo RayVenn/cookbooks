@@ -1,0 +1,4 @@
+source "https://supermarket.getchef.com"
+metadata
+cookbook "uchiwa_wrapper", path: "../uchiwa_wrapper"
+#ENV['SSL_CERT_FILE'] = '/opt/chefdk/embedded/ssl/certs/cacert.pem'

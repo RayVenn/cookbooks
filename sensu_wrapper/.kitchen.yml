@@ -1,0 +1,21 @@
+---
+driver:
+  name: vagrant
+  requrie_chef_omnibus: true
+  customize:
+    memory: 2048
+
+provisioner:
+  name: chef_zero
+
+platforms:
+  - name: ubuntu-14.04
+    driver:
+      box: opscode-ubuntu-14.04
+
+
+suites:
+  - name: default
+    run_list:
+      - recipe[sensu_wrapper::master]
+    attributes:

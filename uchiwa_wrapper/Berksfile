@@ -1,0 +1,3 @@
+source "https://supermarket.getchef.com"
+metadata
+ENV['SSL_CERT_FILE'] = '/opt/chefdk/embedded/ssl/certs/cacert.pem'
