@@ -11,6 +11,7 @@
 include_recipe "build-essential"
 include_recipe "sensu_wrapper::master_search"
 
+
 chef_gem "chef-rewind"
 require 'chef/rewind'
 
